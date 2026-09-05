@@ -1,13 +1,20 @@
-const express = require('express');
-const app = express();
-require('dotenv');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+
+var app = express();
+
+app.use(logger('dev'));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/health', (req, res) => {
-    res.send('Hello')
-});
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
-app.listen(2020, (req, res) => {
-    console.log("Backend is ready for use!");
-});
+module.exports = app;
